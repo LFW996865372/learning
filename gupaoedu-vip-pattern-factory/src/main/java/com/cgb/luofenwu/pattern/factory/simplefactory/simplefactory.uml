@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.cgb.luofenwu.pattern.factory.simplefactory</OriginalElement>
+  <nodes>
+    <node x="124.0" y="80.0">com.cgb.luofenwu.pattern.factory.XmlParse</node>
+    <node x="72.0" y="0.0">com.cgb.luofenwu.pattern.factory.IParse</node>
+    <node x="0.0" y="80.0">com.cgb.luofenwu.pattern.factory.JsonParse</node>
+    <node x="0.0" y="276.0">com.cgb.luofenwu.pattern.factory.simplefactory.SimpleFactoryTest</node>
+    <node x="0.0" y="155.0">com.cgb.luofenwu.pattern.factory.simplefactory.SimpleParseFactory</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.cgb.luofenwu.pattern.factory.JsonParse" target="com.cgb.luofenwu.pattern.factory.IParse">
+      <point x="0.0" y="-15.0" />
+      <point x="52.0" y="55.0" />
+      <point x="92.5" y="55.0" />
+      <point x="-20.5" y="15.0" />
+    </edge>
+    <edge source="com.cgb.luofenwu.pattern.factory.XmlParse" target="com.cgb.luofenwu.pattern.factory.IParse">
+      <point x="0.0" y="-15.0" />
+      <point x="174.0" y="55.0" />
+      <point x="133.5" y="55.0" />
+      <point x="20.5" y="15.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.9080779944289693" x="154.0" y="169.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

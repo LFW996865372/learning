@@ -1,0 +1,26 @@
+
+package com.cgb.luofenwu.proxy.jdkproxy.myimpl;
+import java.lang.reflect.*;
+public class $Proxy0 implements com.cgb.luofenwu.proxy.jdkproxy.myimpl.IUserController{
+MyInvocationHandler h;
+public $Proxy0(MyInvocationHandler h) {
+this.h = h;}
+public void register() {
+try{
+Method m = com.cgb.luofenwu.proxy.jdkproxy.myimpl.IUserController.class.getMethod("register",new Class[]{});
+this.h.invoke(this,m,new Object[]{});
+}catch(Error _ex) { }catch(Throwable e){
+throw new UndeclaredThrowableException(e);
+}}public void login() {
+try{
+Method m = com.cgb.luofenwu.proxy.jdkproxy.myimpl.IUserController.class.getMethod("login",new Class[]{});
+this.h.invoke(this,m,new Object[]{});
+}catch(Error _ex) { }catch(Throwable e){
+throw new UndeclaredThrowableException(e);
+}}public void logout() {
+try{
+Method m = com.cgb.luofenwu.proxy.jdkproxy.myimpl.IUserController.class.getMethod("logout",new Class[]{});
+this.h.invoke(this,m,new Object[]{});
+}catch(Error _ex) { }catch(Throwable e){
+throw new UndeclaredThrowableException(e);
+}}}

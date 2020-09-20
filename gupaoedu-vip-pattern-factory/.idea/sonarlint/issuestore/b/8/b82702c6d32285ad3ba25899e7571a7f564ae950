@@ -1,0 +1,8 @@
+
+\squid:S1854">Remove this useless assignment to local variable "jsonParse2".(¯íÄ‡8ïúÙ¹È.
+Lsquid:S1481".Remove this unused "jsonParse" local variable.(‡¾ç8™ÿØ¹È.
+Msquid:S1481"/Remove this unused "jsonParse2" local variable.(¯íÄ‡8ïúÙ¹È.
+asquid:S1481">Remove this unused "simpleParseFactoryWithMap" local variable.(ÛÛµ‹üÿÿÿÿ8ÓÂÕ¹È.
+[squid:S1854"=Remove this useless assignment to local variable "jsonParse".(‡¾ç8™ÿØ¹È.
+\squid:S2440"9Remove this instantiation of "SimpleParseFactoryWithMap".(ÛÛµ‹üÿÿÿÿ8ï“å¹È.
+psquid:S1854"MRemove this useless assignment to local variable "simpleParseFactoryWithMap".(ÛÛµ‹üÿÿÿÿ8ÓÂÕ¹È.

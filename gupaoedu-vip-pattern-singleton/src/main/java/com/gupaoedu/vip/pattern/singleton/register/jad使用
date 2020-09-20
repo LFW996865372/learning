@@ -1,0 +1,3 @@
+使用jad工具反编译
+C:\DeveloperSoftWare\jad158g.win>jad D:\IDEWorkplace\GuPaoEdu\gupaoedu-vip-pattern-singleton\target\classes\com\gupaoedu\vip\pattern\singleton\register\EnumSingleton.class
+得到EnumSingleton.jad
