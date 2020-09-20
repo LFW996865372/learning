@@ -1,4 +1,8 @@
 1、运用原型模式采购一段业务代码
+https://github.com/LFW996865372/learning/tree/master/gupaoedu-vip-pattern-prototype/src/main/java/com/cgb/luofenwu/prototype
 2、仿JDK动态代理实现原理，自己手写一遍
+https://github.com/LFW996865372/learning/tree/master/gupaoedu-vip-pattern-proxy/src/main/java/com/cgb/luofenwu/proxy
 3、举例Spring源码中你见过的委派模式，并画出类关系图
+https://github.com/LFW996865372/learning/blob/master/%E7%AC%AC%E4%BA%8C%E5%91%A8%E4%BD%9C%E4%B8%9A/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F-%E6%80%8E%E4%B9%88%E4%B8%8A%E7%8F%AD.png
 4、利用策略模式重构一段业务代码
+https://github.com/LFW996865372/learning/tree/master/gupaoedu-vip-pattern-strategy/src/main/java/com/cgb/luofenwu/strategy
