@@ -16,19 +16,16 @@ public class LazyInnerClassSingleton {
             throw new RuntimeException("不允许创建多个实例");
         }
     }
-
     /**
      * 每一个关键字都不是多余的
      * static 是为了使单例的空间共享
      * final 保证这个方法不会被重写
-     *
      * @return
      */
     public static final LazyInnerClassSingleton getInstance() {
         //在返回结果以前，一定会先加载内部类
         return LazyHolder.LAZY;
     }
-
     //静态内部类默认不加载
     private static class LazyHolder {
         private static final LazyInnerClassSingleton LAZY = new LazyInnerClassSingleton();
