@@ -3,7 +3,9 @@
 装饰器是包装原对象进行扩展，不改变原有类。同宗同源。
 适配器是对接口进行转换，注重兼容，通过适配，已将A变B。亡羊补牢。
 2、用Guava API实现GPer社区提问通知的业务场景。
-祥见代码，截图见
+祥见代码，
+https://github.com/LFW996865372/learning/tree/master/gupaoedu-vip-pattern-observer/src/main/java/com/cgb/luofenwu/pattern/observer
+截图见同级目录下《guava观察者.png》
 
 10.01
 第四五周作业
