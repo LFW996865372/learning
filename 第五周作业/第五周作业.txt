@@ -1,0 +1,22 @@
+第五周第一次作业 10月13日
+1、使用processOn绘制Spring系统框架图。
+见系统框架图的节点
+https://www.processon.com/mindmap/5f8bffe5e401fd06fd90f723
+
+2、理解SpringIOC容器的核心作用，生成类关系图
+核心作用：
+	1，IOC是一种设计模式，用来降低代码间的耦合性。	
+	2，控制反转(其中最常见的实现方式叫做依赖注入（DependencyInjection，DI），Spring中控制反转也被直接称作依赖注入，
+	   其基本概念是：不创建对象，但是描述创建它们的方式。在代码中不直接与对象和服务连接，但在配置文件中描述哪一个组件需要哪一项服务。
+	3，Spring 提供了IOC容器通过配置文件或者注解的方式来管理对象之间的依赖关系。
+    用大白话的讲，IOC是将对象的创建的控制权，反转给到了Spring框架。而IOC容器负责Spring中单例与原型两种对象模型的创建。
+
+类关系图：
+见同级目录的图《BeanFactory.png》与《ApplicationContext.png》
+
+
+
+第五周第二次作业 10月15日
+1、理解SpringIOC、DI、MVC的基本执行原理
+2、自己手写一个Mini版本的SpringMVC
+----------作业待补充
