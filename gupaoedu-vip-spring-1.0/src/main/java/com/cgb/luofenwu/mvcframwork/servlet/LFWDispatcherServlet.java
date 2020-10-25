@@ -123,7 +123,7 @@ public class LFWDispatcherServlet extends HttpServlet {
             if (index == null) {
                 continue;
             }
-            // NOTE: 同名的参数多个value组成的数组，转换为用 逗号 分割的字符串
+            // 同名的参数多个value组成的数组，转换为用 逗号 分割的字符串
             String value = Arrays.toString(dataEntry.getValue()).replaceAll("\\[|\\]", "").replaceAll(",\\s", ",");
             params[index] = convert(paramTypes[index], value);
         }
@@ -165,13 +165,12 @@ public class LFWDispatcherServlet extends HttpServlet {
      * @return handler
      */
     private Handler getHandler(HttpServletRequest req) {
-        // https://www.cnblogs.com/xyzq/p/6093063.html
         String contextUrl = req.getContextPath();
         String url = req.getRequestURI();
         // 针对除去contextPath的请求url进行匹配，这样可以与 contextPath解耦
         url = url.replace(contextUrl, "").replaceAll("/+", "/");
-
         for (Handler handler : handlerMappings) {
+            //TODO 大家的疑问点都是为什么不牺牲内存，提升效率。有点牵强的解释是遵循设计原则【需要多思考几遍】
             Matcher matcher = handler.getPattern().matcher(url);
             if (!matcher.matches()) {
                 continue;
@@ -239,8 +238,6 @@ public class LFWDispatcherServlet extends HttpServlet {
                 if (clazz.isAnnotationPresent(GPController.class)) {
                     // class存在 Controller注解，需要初始化，注册成为bean
                     Object controller = clazz.newInstance();
-                    // TODO: 这个地方是否存在问题，应该用class的全名，而不是getSimpleName。避免有bean的类名相同
-                    // TODO： 或者说spring中本就不允许controller的类名相同
                     // Spring默认类名首字母小写
                     String beanName = toLowerFirstCase(clazz.getSimpleName());
                     iocMap.put(beanName, controller);
@@ -248,7 +245,7 @@ public class LFWDispatcherServlet extends HttpServlet {
                     // class存在 Service注解，需要初始化，注册成为bean
                     Object service = clazz.newInstance();
 
-                    // NOTE: 处理Service注解自定义bean名称
+                    // 处理Service注解自定义bean名称
                     GPService serviceAnnotation = clazz.getAnnotation(GPService.class);
                     String beanName = serviceAnnotation.value();
                     if ("".equals(beanName.trim())) {
@@ -256,16 +253,15 @@ public class LFWDispatcherServlet extends HttpServlet {
                         beanName = toLowerFirstCase(clazz.getSimpleName());
                     }
                     iocMap.put(beanName, service);
-                    // service的全名作为key
+                    //service的全名作为key
                     iocMap.put(clazz.getName(), service);
-                    // NOTE: service可能会按照接口类型实现注入，所以需要将service实现的接口类型也注册成bean的类型。
-                    // TODO: 如果类型注入是根据service的父类类型注入的怎么办？
-                    for (Class<?> interfaceClass : clazz.getInterfaces()) {
+                    //service可能会按照接口类型实现注入，所以需要将service实现的接口类型也注册成bean的类型。
+                     for (Class<?> interfaceClass : clazz.getInterfaces()) {
                         String interfaceBeanName = interfaceClass.getName();
                         if (iocMap.containsKey(interfaceBeanName)) {
                             throw new Exception(interfaceBeanName + "is exists!");
                         }
-                        // NOTE: 这里使用接口的全名路径，是为了能够使用类型注解
+                        //这里使用接口的全名路径，是为了能够使用接口类型
                         iocMap.put(interfaceBeanName, service);
                     }
                 }
@@ -283,9 +279,8 @@ public class LFWDispatcherServlet extends HttpServlet {
             // 遍历每一个bean的所有属性，检查是否存在 @autowired等注入性质的注解
             for (Map.Entry<String, Object> beanEntry : iocMap.entrySet()) {
                 Object bean = beanEntry.getValue();
-                // NOTE: 为什么Field要通过class获取，field明明是跟类实例息息相关的
-                // java对Field和Method的封装处理非常类似。都是以类为基础进行获取，只有在运行方法或者设置field的时候
-                // 才会设置目标对象，与目标对象绑定在一起
+                // java对Field和Method的封装处理非常类似。都是以类为基础进行获取
+                // 只有在运行方法或者设置field的时候,才会设置目标对象，与目标对象绑定在一起
                 for (Field field : bean.getClass().getDeclaredFields()) {
                     // 判断field是否存在@autowired
                     if (!field.isAnnotationPresent(GPAutowired.class)) {
@@ -343,6 +338,11 @@ public class LFWDispatcherServlet extends HttpServlet {
         }
     }
 
+    /**
+     * 利用ASCII码做首字母小写（有点意思）
+     * @param name
+     * @return
+     */
     private String toLowerFirstCase(String name) {
         char[] chars = name.toCharArray();
         chars[0] += 32;
