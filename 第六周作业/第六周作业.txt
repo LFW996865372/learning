@@ -1,8 +1,31 @@
 1、使用ProcessOn绘制SpringIOC容器初始化过程的时序图。10月20日
-
+https://www.processon.com/diagraming/5f957f99e401fd06fda153e7
 
 
 
 2、整理笔记，完全理解SpringIOC容器的核心原理和设计模式的应用场景。
-模板模式，抽象工厂，策略模式，装饰器模式
+一 什么是IOC：
+1 何为依赖？在类A（或者说对象a)中，用到了类B（或者说对象b）中的属性/方法，可以称A依赖于B。
+2 在没有用springIOC之前，若在A中用到B中的属性/方法，我们是通过new B()来创建一个B对象功A调用的。
+而IOC的出现，使得我们不需要去手动写代码去new这些对象了，而是spring的IOC容器会帮我们实现。
+3 IOC(Inversion of Control)控制反转：
+所谓控制反转，就是把原先我们代码里面需要实现的对象创建、依赖的代码，反转给容器来帮忙实现。
+既然是交给了容器来实现，那么必然的我们需要创建一个容器，同时需要一种描述来让容器知道需要创建的对象与对象的关系。
+这个描述最具体表现就是我们所看到的配置文件。可以用xml，properties文件等语义化配置文件表示。
+那描述对象关系的文件存放在可能是classpath，filesystem，或者是URL 网络资源，servletContext 等。
+4 DI(Dependency Injection)依赖注入：就是指对象是被动接受依赖类而不是自己主动去找。
+换句话说就是指对象不是从容器中查找它依赖的类，而是在容器实例化对象的时候主动将它依赖的类注入给它。
+二 以上提到依赖对象的创建和注入，都是在容器中实现的，那spring是如何创建这个容器的？
+spring IOC容器初始化三部：
+定位（定位配置文件和扫描相关注解）- 加载（将配置信息载入到内存中）- 注册（根据载入的信息将对象初始化到IOC容器中）
 
+
+
+模板模式，抽象工厂，策略模式，装饰器模式
+1、Spring中在各种BeanFactory以及ApplicationContext创建Bean中,用到了典型的工厂方法模式。
+2、Spring创建Singleton的bean，使用了单例模式(注册式/容器式)
+3、ApplicationContext ctx = new Class PathXmlApplicationContext("context.xml");
+就使用了策略模式。
+4、BeanPostProcessor就是Spring中使用模板方法模式的体现之一。
+5、BeanDefinition进行注册的过程中，设置BeanDefinitionParserDelegate类型的Delegate对象传给this.delegate，并将这个对象作为一个参数传给：parseBeanDefinitions(root, this.delegate)中，然后主要的解析的工作就是通过delegate作为主要角色来完成的。 此处是典型的委派模式。
+6、AbstractApplicationContext中的refresh()中是registerListeners();此处是典型的注册监听器，使用到了观察者模式。
