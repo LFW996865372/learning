@@ -1,3 +1,4 @@
+20201027
 1、使用ProcessOn绘制SpringDI容器初始化过程的时序图
 https://www.processon.com/diagraming/5fa018525653bb0add896cf8
 
@@ -29,3 +30,9 @@ BeanDefinitionValueResolver类中的resolveValueIfNecessary()，对属性值解�
 BeanWrapper.setPropertyValues(),定义了依赖注入的方法声明，该方法也使用了委托模式。
 BeanWrapperImpl.setPropertyValues()，类主要是对容器中完成初始化的Bean实例对象进行属性的依赖注入，即把Bean对象设置到它所依赖的另一个Bean的属性中去。
 然而，BeanWrapperImpl中的注入方法实际上由AbstractNestablePropertyAccessor来实现的
+
+20201029
+1、使用ProcessOn绘制SpringAOP容器初始化过程的时序图
+待完成
+2、整理笔记，完全理解SpringAOP容器的核心原理和设计模式的应用场景。
+ProxyFactory，代理工厂
