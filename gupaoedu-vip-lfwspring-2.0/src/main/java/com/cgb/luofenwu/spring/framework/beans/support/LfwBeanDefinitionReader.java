@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * 加载（读取配置文件+扫描）
+ * 加载定位（读取配置文件+扫描）
+ *
  * @Author LFW.
  */
 public class LfwBeanDefinitionReader {
@@ -25,84 +26,84 @@ public class LfwBeanDefinitionReader {
     private final String SCAN_PACKAGE = "scanPackage";
 
     /**
-     *
      * @param locations
      */
-    public LfwBeanDefinitionReader(String... locations){
+    public LfwBeanDefinitionReader(String... locations) {
         //通过URL定位找到其所对应的文件，然后转换为文件流
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream(locations[0].replace("classpath:",""));
-        try {
+        try (InputStream is = this.getClass().getClassLoader().getResourceAsStream(locations[0].replace("classpath:", ""))) {
             config.load(is);
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
-            if(null != is){
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
-        
         doScanner(config.getProperty(SCAN_PACKAGE));
     }
 
+    /**
+     * 扫码指定包的类
+     *
+     * @param scanPackage
+     */
     private void doScanner(String scanPackage) {
         //转换为文件路径，实际上就是把.替换为/就OK了
-        URL url = this.getClass().getResource("/" + scanPackage.replaceAll("\\.","/"));
+        URL url = this.getClass().getResource("/" + scanPackage.replaceAll("\\.", "/"));
 
         //URL url = this.getClass().getClassLoader().getResource("/" + scanPackage.replaceAll("\\.","/"));
         File classPath = new File(url.getFile());
         for (File file : classPath.listFiles()) {
-            if(file.isDirectory()){
+            if (file.isDirectory()) {
                 doScanner(scanPackage + "." + file.getName());
-            }else{
-                if(!file.getName().endsWith(".class")){ continue;}
-                String className = (scanPackage + "." + file.getName().replace(".class",""));
+            } else {
+                if (!file.getName().endsWith(".class")) {
+                    continue;
+                }
+                String className = (scanPackage + "." + file.getName().replace(".class", ""));
                 registyBeanClasses.add(className);
             }
         }
     }
 
-    public Properties getConfig(){
+    public Properties getConfig() {
         return this.config;
     }
 
     //把配置文件中扫描到的所有的配置信息转换为BeanDefinition对象，以便于之后IOC操作方便
-    public List<LfwBeanDefinition> loadBeanDefinitions(){
+    public List<LfwBeanDefinition> loadBeanDefinitions() {
         List<LfwBeanDefinition> result = new ArrayList<LfwBeanDefinition>();
         try {
             for (String className : registyBeanClasses) {
                 Class<?> beanClass = Class.forName(className);
                 //如果是一个接口，是不能实例化的
                 //用它实现类来实例化
-                if(beanClass.isInterface()) { continue; }
+                if (beanClass.isInterface()) {
+                    continue;
+                }
 
                 //beanName有三种情况:
                 //1、默认是类名首字母小写
                 //2、自定义名字
                 //3、接口注入
-                result.add(doCreateBeanDefinition(toLowerFirstCase(beanClass.getSimpleName()),beanClass.getName()));
+                result.add(doCreateBeanDefinition(toLowerFirstCase(beanClass.getSimpleName()), beanClass.getName()));
 
-                Class<?> [] interfaces = beanClass.getInterfaces();
+                Class<?>[] interfaces = beanClass.getInterfaces();
                 for (Class<?> i : interfaces) {
-                    //如果是多个实现类，只能覆盖
-                    //为什么？因为Spring没那么智能，就是这么傻
-                    //这个时候，可以自定义名字
-                    result.add(doCreateBeanDefinition(i.getName(),beanClass.getName()));
+                    //如果是多个实现类，只能覆盖，可以自定义名字
+                    result.add(doCreateBeanDefinition(i.getName(), beanClass.getName()));
                 }
-
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
     }
 
-
-    //把每一个配信息解析成一个BeanDefinition
-    private LfwBeanDefinition doCreateBeanDefinition(String factoryBeanName, String beanClassName){
+    /**
+     * 把每一个配信息解析成一个BeanDefinition
+     *
+     * @param factoryBeanName
+     * @param beanClassName
+     * @return
+     */
+    private LfwBeanDefinition doCreateBeanDefinition(String factoryBeanName, String beanClassName) {
         LfwBeanDefinition beanDefinition = new LfwBeanDefinition();
         beanDefinition.setBeanClassName(beanClassName);
         beanDefinition.setFactoryBeanName(factoryBeanName);
@@ -110,7 +111,7 @@ public class LfwBeanDefinitionReader {
     }
 
     private String toLowerFirstCase(String simpleName) {
-        char [] chars = simpleName.toCharArray();
+        char[] chars = simpleName.toCharArray();
         //之所以加，是因为大小写字母的ASCII码相差32，
         // 而且大写字母的ASCII码要小于小写字母的ASCII码
         //在Java中，对char做算学运算，实际上就是对ASCII码做算学运算
