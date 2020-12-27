@@ -39,6 +39,7 @@ public class LfwBeanDefinitionReader {
     }
 
     /**
+     * 抄1.0
      * 扫码指定包的类
      *
      * @param scanPackage
@@ -46,8 +47,6 @@ public class LfwBeanDefinitionReader {
     private void doScanner(String scanPackage) {
         //转换为文件路径，实际上就是把.替换为/就OK了
         URL url = this.getClass().getResource("/" + scanPackage.replaceAll("\\.", "/"));
-
-        //URL url = this.getClass().getClassLoader().getResource("/" + scanPackage.replaceAll("\\.","/"));
         File classPath = new File(url.getFile());
         for (File file : classPath.listFiles()) {
             if (file.isDirectory()) {
@@ -66,7 +65,10 @@ public class LfwBeanDefinitionReader {
         return this.config;
     }
 
-    //把配置文件中扫描到的所有的配置信息转换为BeanDefinition对象，以便于之后IOC操作方便
+    /**
+     * 把配置文件中扫描到的所有的配置信息转换为BeanDefinition对象，以便于之后IOC操作方便
+     * @return
+     */
     public List<LfwBeanDefinition> loadBeanDefinitions() {
         List<LfwBeanDefinition> result = new ArrayList<LfwBeanDefinition>();
         try {

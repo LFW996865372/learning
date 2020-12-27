@@ -2,13 +2,11 @@ package com.cgb.luofenwu.spring.framework.annotation;
 
 import java.lang.annotation.*;
 
-/**
- * @Author LFW
- */
-@Target({ElementType.TYPE})
+@Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface LfwService {
+public @interface LfwRequestParam {
 
-	String value() default "";
+    String value() default "";
+    boolean required() default true;
 }

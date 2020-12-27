@@ -69,6 +69,12 @@ public class LfwApplicationContext extends LfwDefaultListableBeanFactory impleme
         }
     }
 
+    /**
+     * 注册，把配置信息放到容器里面(伪IOC容器)
+     *
+     * @param beanDefinitions
+     * @throws Exception
+     */
     private void doRegisterBeanDefinition(List<LfwBeanDefinition> beanDefinitions) throws Exception {
         for (LfwBeanDefinition beanDefinition : beanDefinitions) {
             if (super.beanDefinitionMap.containsKey(beanDefinition.getFactoryBeanName())) {
@@ -96,40 +102,52 @@ public class LfwApplicationContext extends LfwDefaultListableBeanFactory impleme
      * @throws Exception
      */
     public Object getBean(String beanName) throws Exception {
+        //1、先拿到BeanDefinition配置信息
         LfwBeanDefinition lfwBeanDefinition = this.beanDefinitionMap.get(beanName);
         Object instance = null;
 
-        //TODO 这个逻辑还不严谨，自己可以去参考Spring源码
+        //TODO 这个逻辑不严谨，去参考Spring源码
         //工厂模式 + 策略模式
         //Bean初始化前的钩子
         LfwBeanPostProcessor postProcessor = new LfwBeanPostProcessor();
         postProcessor.postProcessBeforeInitialization(instance, beanName);
-        //为何要先初始化再注入，而不能初始化同时完成注入-->循环依赖
+        //NOTE 为何要先初始化再注入，而不能初始化同时完成注入-->循环依赖
         //class A{ B b;}
         //class B{ A a;}
         //先有鸡还是先有蛋的问题，一个方法是搞不定的，要分两次
 
-        //1、初始化bean实例
+        //2、反射式、实例化bean
         instance = instantiateBean(lfwBeanDefinition);
 
-        //把这个对象封装到BeanWrapper中
+        //3、把这个对象封装到BeanWrapper中
         LfwBeanWrapper beanWrapper = new LfwBeanWrapper(instance);
 
-        //2、拿到BeanWrapper之后，把BeanWrapper保存到IOC容器中去
+        //4、拿到BeanWrapper之后，把BeanWrapper保存到IOC容器中去
         this.factoryBeanInstanceCache.put(beanName, beanWrapper);
         //Bean初始化后的钩子
         postProcessor.postProcessAfterInitialization(instance, beanName);
 
-        //3、注入
+
+        //可能涉及到循环依赖？
+        //A{ B b}
+        //B{ A b}
+        //用两个缓存，循环两次
+        //1、把第一次读取结果为空的BeanDefinition存到第一个缓存
+        //2、等第一次循环之后，第二次循环再检查第一次的缓存，再进行赋值
+        //5、执行依赖注入
         populateBean(beanName, new LfwBeanDefinition(), beanWrapper);
-        return this.factoryBeanInstanceCache.get(beanName).getWrappedInstance();
+        return beanWrapper.getWrappedInstance();
     }
 
+    /**
+     * 注入bean
+     *
+     * @param beanName
+     * @param lfwBeanDefinition
+     * @param lfwBeanWrapper
+     */
     private void populateBean(String beanName, LfwBeanDefinition lfwBeanDefinition, LfwBeanWrapper lfwBeanWrapper) {
         Object instance = lfwBeanWrapper.getWrappedInstance();
-
-//        lfwBeanDefinition.getBeanClassName();
-
         Class<?> clazz = lfwBeanWrapper.getWrappedClass();
         //判断只有加了注解的类，才执行依赖注入
         if (!(clazz.isAnnotationPresent(LfwController.class) || clazz.isAnnotationPresent(LfwService.class))) {
@@ -138,39 +156,34 @@ public class LfwApplicationContext extends LfwDefaultListableBeanFactory impleme
 
         //获得所有的fields
         Field[] fields = clazz.getDeclaredFields();
+        //遍历有LfwAutowired注解的属性
         for (Field field : fields) {
             if (!field.isAnnotationPresent(LfwAutowired.class)) {
                 continue;
             }
 
             LfwAutowired autowired = field.getAnnotation(LfwAutowired.class);
-
             String autowiredBeanName = autowired.value().trim();
             if ("".equals(autowiredBeanName)) {
+                //获取字段的类型
                 autowiredBeanName = field.getType().getName();
             }
 
             //强制访问
             field.setAccessible(true);
-
             try {
-                //为什么会为NULL，先留个坑
                 if (this.factoryBeanInstanceCache.get(autowiredBeanName) == null) {
                     continue;
                 }
-//                if(instance == null){
-//                    continue;
-//                }
                 field.set(instance, this.factoryBeanInstanceCache.get(autowiredBeanName).getWrappedInstance());
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
-
         }
     }
 
     /**
-     * 实例化
+     * 反射实例化
      *
      * @param lfwBeanDefinition
      * @return
